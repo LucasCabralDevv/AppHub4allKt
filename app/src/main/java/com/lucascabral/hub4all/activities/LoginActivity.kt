@@ -34,15 +34,23 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun handlerLogin() {
+    private fun handlerLogin() {
 
         val email = loginEmailEdit.text.toString()
         val password = loginPasswordEdit.text.toString()
 
-        if (emailValidation(email)) return
+        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!password.isEmpty()) {//Email e Senha válidos!
+                doLogin(email, password)
+            } else {
+                loginPasswordEdit.error = getString(R.string.password_empty_error_message)
+            }
+        } else {
+            loginEmailEdit.error = getString(R.string.email_empty_error_message)
+        }
+    }
 
-        if (passwordValidation(password)) return
-
+    private fun doLogin(email: String, password: String) {
         val remote = RetrofitClient.createService(LoginService::class.java)
 
         val call: Call<LoginResponse> = remote.login(email, password)
@@ -50,54 +58,27 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             override fun onResponse(
                 call: Call<LoginResponse>, response: Response<LoginResponse>
             ) {
-
                 if (response.isSuccessful) {
 
                     loginProgressBar.visibility = View.VISIBLE
-
+                    sendMessage(getString(R.string.login_successful_message))
                     val intent = Intent(applicationContext, EnterprisesActivity::class.java)
                     startActivity(intent)
                     finish()
-                    Toast.makeText(
-                        applicationContext,
-                        "Sucesso ao fazer Login",
-                        Toast.LENGTH_LONG
-                    ).show()
+
+                } else { //Exibindo texto de credenciais inválidas
+                    loginCredentialsErrorTextView.visibility = View.VISIBLE
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                loginCredentialsErrorTextView.visibility = View.VISIBLE
+                sendMessage(getString(R.string.login_failure_message))
             }
         })
     }
 
-    fun passwordValidation(password: String): Boolean{
-
-        if (password.isEmpty()){
-            //loginPasswordEdit.error[R.string.password_empty_error_message]
-            //loginPasswordEdit.requestFocus()
-                Toast.makeText(applicationContext, "senha", Toast.LENGTH_LONG).show()
-            return true
-        }
-        return false
-    }
-
-    fun emailValidation(email: String): Boolean {
-
-        if (email.isEmpty()){
-            //loginEmailEdit.error[R.string.email_empty_error_message]
-            //loginEmailEdit.requestFocus()
-            Toast.makeText(applicationContext, "empty Email", Toast.LENGTH_LONG).show()
-            return true
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            //loginEmailEdit.error[R.string.email_invalid_error_message]
-            //loginEmailEdit.requestFocus()
-            Toast.makeText(applicationContext, "invalid email", Toast.LENGTH_LONG).show()
-            return true
-        }
-        return false
+    fun sendMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun setListeners() {
