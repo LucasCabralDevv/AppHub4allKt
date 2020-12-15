@@ -4,4 +4,8 @@
     <string name="login_email_hint">E-mail</string>
     <string name="login_password_hint">Senha</string>
     <string name="login_text_button">Entrar</string>
+    <string name="password_empty_error_message">Por favor, preencha a senha!</string>
+    <string name="email_empty_error_message">Por favor, preencha o e-mail!</string>
+    <string name="email_invalid_error_message">Por favor, preencha o e-mail!</string>
+    <string name="login_credentials_error_message">Credenciais informadas são inválidas, tente novamente.</string>
 </resources>
