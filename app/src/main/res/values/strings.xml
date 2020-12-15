@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Hub 4all</string>
+    <string name="login_title_text">BEM-VINDO AO HUB 4all</string>
+    <string name="login_email_hint">E-mail</string>
+    <string name="login_password_hint">Senha</string>
+    <string name="login_text_button">Entrar</string>
 </resources>
