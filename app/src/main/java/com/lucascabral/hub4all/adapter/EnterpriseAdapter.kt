@@ -6,9 +6,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.lucascabral.hub4all.R
+import com.lucascabral.hub4all.models.EnterpriseModel
 
 class EnterpriseAdapter : RecyclerView.Adapter<EnterpriseAdapter.EnterpriseViewHolder>() {
+
+    private var listEnterprise: List<EnterpriseModel>? = arrayListOf()
+    private val baseUrl = "https://empresas.ioasys.com.br/api/v1/"
+
+    fun setEnterpriseList(enterpriseList: List<EnterpriseModel>?) {
+        this.listEnterprise = enterpriseList
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnterpriseViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_enterprise, parent, false)
@@ -17,13 +27,13 @@ class EnterpriseAdapter : RecyclerView.Adapter<EnterpriseAdapter.EnterpriseViewH
 
     override fun onBindViewHolder(holder: EnterpriseViewHolder, position: Int) {
 
-        holder.bindData(position)
+        val enterprise: EnterpriseModel = listEnterprise!![position]
+        holder.bindData(enterprise, holder)
     }
 
     override fun getItemCount(): Int {
-        return 0
+        return listEnterprise!!.count()
     }
-
 
     class EnterpriseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -32,10 +42,17 @@ class EnterpriseAdapter : RecyclerView.Adapter<EnterpriseAdapter.EnterpriseViewH
         private var typeEnterprise: TextView = itemView.findViewById(R.id.adapterTypeTextView)
         private var countryEnterprise: TextView = itemView.findViewById(R.id.adapterCountryTextView)
 
-        fun bindData(position: Int) {
 
-            this.nameEnterprise.text = ""
 
+        fun bindData(enterprise: EnterpriseModel, holder: EnterpriseViewHolder) {
+            val baseUrl = "https://empresas.ioasys.com.br"
+
+            Glide.with(holder.itemView.context)
+                .load(baseUrl + enterprise.photo).into(holder.imageEnterprise)
+
+            holder.nameEnterprise.text = enterprise.enterpriseName
+            holder.typeEnterprise.text = enterprise.enterpriseType.enterpriseTypeName
+            holder.countryEnterprise.text = enterprise.country
         }
     }
 

@@ -10,13 +10,12 @@
         android:layout_width="105dp"
         android:layout_height="80dp"
         android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginTop="11dp"
         android:layout_marginBottom="9dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/foto_lista" />
+        tools:src="@drawable/logoverde" />
 
     <TextView
         android:id="@+id/adapterNameTextView"

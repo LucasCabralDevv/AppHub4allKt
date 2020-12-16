@@ -26,6 +26,8 @@ class EnterprisesActivity : AppCompatActivity() {
     private var client: String = ""
     private var uid: String = ""
 
+    private val adapterEnterprise: EnterpriseAdapter = EnterpriseAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enterprises)
@@ -48,6 +50,8 @@ class EnterprisesActivity : AppCompatActivity() {
                     val enterprisesResponse: EnterpriseResponse? = response.body()
                     val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
                     Log.d("Enterprises", "onResponse: " + enterprises.toString())
+                    adapterEnterprise.setEnterpriseList(enterprises)
+                    enterprisesRecycler.adapter = adapterEnterprise
                 }else {
                     Toast.makeText(
                         applicationContext,
@@ -74,6 +78,5 @@ class EnterprisesActivity : AppCompatActivity() {
         enterprisesRecycler.layoutManager = LinearLayoutManager(applicationContext)
         enterprisesRecycler.setHasFixedSize(true)
         enterprisesRecycler.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
-        enterprisesRecycler.adapter = EnterpriseAdapter()
     }
 }
