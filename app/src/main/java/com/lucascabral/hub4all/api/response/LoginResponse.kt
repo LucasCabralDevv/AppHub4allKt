@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 class LoginResponse {
 
     @SerializedName("success")
-    var success: Boolean = true
+    private var success: Boolean = true
 
     @SerializedName("id")
-    var id: Int = 0
+    private var id: Int = 0
 }

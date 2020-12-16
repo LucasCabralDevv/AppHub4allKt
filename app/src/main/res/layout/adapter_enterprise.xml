@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/adapterImageView"
+        android:layout_width="105dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/foto_lista" />
+
+    <TextView
+        android:id="@+id/adapterNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="#1A0E49"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/adapterImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Empresa1" />
+
+    <TextView
+        android:id="@+id/adapterTypeTextView"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="4.5dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="#8D8C8C"
+        android:textSize="17sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/adapterImageView"
+        app:layout_constraintTop_toBottomOf="@+id/adapterNameTextView"
+        tools:text="Negócio" />
+
+    <TextView
+        android:id="@+id/adapterCountryTextView"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="1.5dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="#8D8C8C"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/adapterImageView"
+        app:layout_constraintTop_toBottomOf="@+id/adapterTypeTextView"
+        tools:text="Brasil" />
+</androidx.constraintlayout.widget.ConstraintLayout>
