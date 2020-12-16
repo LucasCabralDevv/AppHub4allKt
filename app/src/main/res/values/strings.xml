@@ -8,7 +8,7 @@
     <string name="email_empty_error_message">Por favor, preencha o e-mail!</string>
     <string name="email_invalid_error_message">Por favor, preencha o e-mail!</string>
     <string name="login_credentials_error_message">Credenciais informadas são inválidas, tente novamente.</string>
-    <string name="login_failure_message">Falha na conexão com a internet</string>
+    <string name="internet_failure_message">Falha na conexão com a internet</string>
     <string name="login_successful_message">Sucesso ao fazer login</string>
     <string name="connecting_server_error_message">Erro ao conectar com o servidor</string>
 </resources>

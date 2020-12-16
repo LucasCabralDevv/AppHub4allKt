@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.lucascabral.hub4all.R
 import com.lucascabral.hub4all.adapter.EnterpriseAdapter
 import com.lucascabral.hub4all.api.RequestEnterpriseService
@@ -52,16 +51,22 @@ class EnterprisesActivity : AppCompatActivity() {
                     Log.d("Enterprises", "onResponse: " + enterprises.toString())
                     adapterEnterprise.setEnterpriseList(enterprises)
                     enterprisesRecycler.adapter = adapterEnterprise
-                }else {
+
+                } else {
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.connecting_server_error_message),
-                    Toast.LENGTH_LONG).show()
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<EnterpriseResponse>, t: Throwable) {
-
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.internet_failure_message),
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         })

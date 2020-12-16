@@ -83,7 +83,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                sendMessage(getString(R.string.login_failure_message))
+                sendMessage(getString(R.string.internet_failure_message))
             }
         })
     }
