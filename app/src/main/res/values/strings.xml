@@ -11,4 +11,5 @@
     <string name="internet_failure_message">Falha na conexão com a internet</string>
     <string name="login_successful_message">Sucesso ao fazer login</string>
     <string name="connecting_server_error_message">Erro ao conectar com o servidor</string>
+    <string name="search_title_text">Pesquisar</string>
 </resources>
