@@ -5,8 +5,8 @@
     <item
         android:id="@+id/search_menu"
         android:title="@string/search_title_text"
-        android:queryHint="Pesquisar"
         app:showAsAction="always"
-        android:icon="@drawable/ic_search_white"/>
+        android:icon="@drawable/ic_search_white"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
 </menu>
