@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lucascabral.hub4all.R
 import com.lucascabral.hub4all.adapter.EnterpriseAdapter
-import com.lucascabral.hub4all.api.RequestEnterpriseService
+import com.lucascabral.hub4all.api.RequestAllEnterprisesService
+import com.lucascabral.hub4all.api.RequestSearchEnterprisesService
 import com.lucascabral.hub4all.api.RetrofitClient
 import com.lucascabral.hub4all.api.response.EnterpriseResponse
 import com.lucascabral.hub4all.constants.HeaderConstants
@@ -38,7 +39,7 @@ class EnterprisesActivity : AppCompatActivity() {
 
         getHeaders()
         setupRecyclerView()
-        requestEnterprises()
+        requestAllEnterprises()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -58,6 +59,10 @@ class EnterprisesActivity : AppCompatActivity() {
                 searchView.setQuery("", false)
                 searchItem.collapseActionView()
 
+                if (query != null) {
+                    requestSearchEnterprises(query)
+                }
+
                 return true
             }
 
@@ -68,8 +73,44 @@ class EnterprisesActivity : AppCompatActivity() {
         return true
     }
 
-    private fun requestEnterprises() {
-        val remote = RetrofitClient.createService(RequestEnterpriseService::class.java)
+    private fun requestSearchEnterprises(query: String) {
+        val remote = RetrofitClient.createService(RequestSearchEnterprisesService::class.java)
+        val call: Call<EnterpriseResponse> =
+            remote.searchEnterprises(accessToken, client, uid, query)
+
+        call.enqueue(object : Callback<EnterpriseResponse>{
+            override fun onResponse(
+                call: Call<EnterpriseResponse>,
+                response: Response<EnterpriseResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val enterprisesResponse: EnterpriseResponse? = response.body()
+                    val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
+                    Log.d("Enterprises", "onResponse: " + enterprises.toString())
+                    adapterEnterprise.setEnterpriseList(enterprises)
+                    enterprisesRecycler.adapter = adapterEnterprise
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.connecting_server_error_message),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<EnterpriseResponse>, t: Throwable) {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.internet_failure_message),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
+    }
+
+    private fun requestAllEnterprises() {
+        val remote = RetrofitClient.createService(RequestAllEnterprisesService::class.java)
 
         val call: Call<EnterpriseResponse> = remote.getEnterprises(accessToken, client, uid)
         call.enqueue(object : Callback<EnterpriseResponse> {
@@ -83,6 +124,7 @@ class EnterprisesActivity : AppCompatActivity() {
                     Log.d("Enterprises", "onResponse: " + enterprises.toString())
                     adapterEnterprise.setEnterpriseList(enterprises)
                     enterprisesRecycler.adapter = adapterEnterprise
+                    adapterEnterprise.notifyDataSetChanged()
 
                 } else {
                     Toast.makeText(
