@@ -36,6 +36,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    fun sendMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
     private fun handlerLogin() {
         val email = loginEmailEdit.text.toString()
         val password = loginPasswordEdit.text.toString()
@@ -65,10 +69,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     loginProgressBar.visibility = View.VISIBLE
                     sendMessage(getString(R.string.login_successful_message))
 
-                    val headers: Headers = response.headers()
-                    val token: String = response.headers()[HeaderConstants.ACCESS_TOKEN].toString()
-                    val client: String = response.headers()[HeaderConstants.CLIENT].toString()
-                    val uid: String = response.headers()[HeaderConstants.UID].toString()
+                    //Recupera os headers
+                    val (token: String, client: String, uid: String) = getHeaders(response)
 
                     val intent = Intent(applicationContext, EnterprisesActivity::class.java)
                     intent.putExtra(HeaderConstants.ACCESS_TOKEN, token)
@@ -88,8 +90,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    fun sendMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    private fun getHeaders(response: Response<LoginResponse>): Triple<String, String, String> {
+        val headers: Headers = response.headers()
+        val token: String = response.headers()[HeaderConstants.ACCESS_TOKEN].toString()
+        val client: String = response.headers()[HeaderConstants.CLIENT].toString()
+        val uid: String = response.headers()[HeaderConstants.UID].toString()
+        return Triple(token, client, uid)
     }
 
     private fun setListeners() {

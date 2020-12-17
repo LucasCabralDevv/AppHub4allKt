@@ -43,7 +43,6 @@ class EnterprisesActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.search_menu, menu)
 
@@ -73,40 +72,8 @@ class EnterprisesActivity : AppCompatActivity() {
         return true
     }
 
-    private fun requestSearchEnterprises(query: String) {
-        val remote = RetrofitClient.createService(RequestSearchEnterprisesService::class.java)
-        val call: Call<EnterpriseResponse> =
-            remote.searchEnterprises(accessToken, client, uid, query)
-
-        call.enqueue(object : Callback<EnterpriseResponse>{
-            override fun onResponse(
-                call: Call<EnterpriseResponse>,
-                response: Response<EnterpriseResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val enterprisesResponse: EnterpriseResponse? = response.body()
-                    val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
-                    Log.d("Enterprises", "onResponse: " + enterprises.toString())
-                    adapterEnterprise.setEnterpriseList(enterprises)
-                    enterprisesRecycler.adapter = adapterEnterprise
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.connecting_server_error_message),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-
-            override fun onFailure(call: Call<EnterpriseResponse>, t: Throwable) {
-                Toast.makeText(
-                    applicationContext,
-                    getString(R.string.internet_failure_message),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-        })
+    fun sendMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun requestAllEnterprises() {
@@ -121,28 +88,56 @@ class EnterprisesActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val enterprisesResponse: EnterpriseResponse? = response.body()
                     val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
-                    Log.d("Enterprises", "onResponse: " + enterprises.toString())
                     adapterEnterprise.setEnterpriseList(enterprises)
                     enterprisesRecycler.adapter = adapterEnterprise
-                    adapterEnterprise.notifyDataSetChanged()
-
                 } else {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.connecting_server_error_message),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    sendMessage(getString(R.string.connecting_server_error_message))
                 }
             }
 
             override fun onFailure(call: Call<EnterpriseResponse>, t: Throwable) {
-                Toast.makeText(
-                    applicationContext,
-                    getString(R.string.internet_failure_message),
-                    Toast.LENGTH_LONG
-                ).show()
+                sendMessage(getString(R.string.internet_failure_message))
             }
         })
+    }
+
+    private fun requestSearchEnterprises(query: String) {
+        val remote = RetrofitClient.createService(RequestSearchEnterprisesService::class.java)
+        val call: Call<EnterpriseResponse> =
+            remote.searchEnterprises(accessToken, client, uid, query)
+
+        call.enqueue(object : Callback<EnterpriseResponse> {
+            override fun onResponse(
+                call: Call<EnterpriseResponse>,
+                response: Response<EnterpriseResponse>
+            ) {
+                if (response.isSuccessful) {
+
+                    showSearchedEnterprise(response, query)
+                } else {
+                    sendMessage(getString(R.string.connecting_server_error_message))
+                }
+            }
+
+            override fun onFailure(call: Call<EnterpriseResponse>, t: Throwable) {
+                sendMessage(getString(R.string.internet_failure_message))
+            }
+        })
+    }
+
+    private fun showSearchedEnterprise(
+        response: Response<EnterpriseResponse>,
+        query: String
+    ) {
+        val enterprisesResponse: EnterpriseResponse? = response.body()
+        val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
+        if (!enterprises.isNullOrEmpty()) {
+            adapterEnterprise.setEnterpriseList(enterprises)
+            enterprisesRecycler.adapter = adapterEnterprise
+            adapterEnterprise.notifyDataSetChanged()
+        } else {
+            sendMessage("Nenhuma empresa foi encontrada com o nome: $query")
+        }
     }
 
     private fun getHeaders() {
@@ -152,7 +147,6 @@ class EnterprisesActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-
         enterprisesRecycler.layoutManager = LinearLayoutManager(applicationContext)
         enterprisesRecycler.setHasFixedSize(true)
         enterprisesRecycler.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
