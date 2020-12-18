@@ -12,11 +12,12 @@
         android:layout_marginStart="22dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="20dp"
+        android:contentDescription="@string/enterprise_image_contentDescription"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/logoverde" />
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/descriptionEnterpriseTextView"
@@ -26,7 +27,7 @@
         android:layout_marginTop="19dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="86dp"
-        android:textColor="#8D8C8C"
+        android:textColor="@color/warm_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

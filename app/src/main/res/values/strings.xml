@@ -15,4 +15,5 @@
     <string name="login_logo_contentDescription">Logomarca do 4all</string>
     <string name="search_query_hint">Pesquisar</string>
     <string name="search_empty_enterprise_message">"Nenhuma empresa foi encontrada com o nome: %s"</string>
+    <string name="enterprise_image_contentDescription">Imagem representativa da empresa</string>
 </resources>
