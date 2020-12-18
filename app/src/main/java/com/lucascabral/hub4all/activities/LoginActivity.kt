@@ -48,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validatePassword(password: String): Boolean {
         return if (password.isNotEmpty()) {
+            loginPasswordTextInputLayout.error = null
             true
         } else {
             loginPasswordTextInputLayout.error = getString(R.string.password_empty_error_message)
@@ -65,7 +66,10 @@ class LoginActivity : AppCompatActivity() {
                 loginEmailTextInputLayout.error = getString(R.string.email_invalid_error_message)
                 false
             }
-            else -> true
+            else -> {
+                loginEmailTextInputLayout.error = null
+                true
+            }
         }
     }
 
