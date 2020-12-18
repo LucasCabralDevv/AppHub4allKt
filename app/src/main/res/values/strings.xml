@@ -6,10 +6,13 @@
     <string name="login_text_button">Entrar</string>
     <string name="password_empty_error_message">Por favor, preencha a senha!</string>
     <string name="email_empty_error_message">Por favor, preencha o e-mail!</string>
-    <string name="email_invalid_error_message">Por favor, preencha o e-mail!</string>
+    <string name="email_invalid_error_message">Por favor, preencha um e-mail válido!</string>
     <string name="login_credentials_error_message">Credenciais informadas são inválidas, tente novamente.</string>
     <string name="internet_failure_message">Falha na conexão com a internet</string>
     <string name="login_successful_message">Sucesso ao fazer login</string>
     <string name="connecting_server_error_message">Erro ao conectar com o servidor</string>
     <string name="search_title_text">Pesquisar</string>
+    <string name="login_logo_contentDescription">Logomarca do 4all</string>
+    <string name="search_query_hint">Pesquisar</string>
+    <string name="search_empty_enterprise_message">"Nenhuma empresa foi encontrada com o nome: %s"</string>
 </resources>

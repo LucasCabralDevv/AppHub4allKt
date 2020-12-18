@@ -2,12 +2,8 @@ package com.lucascabral.hub4all.models
 
 import com.google.gson.annotations.SerializedName
 
-class EnterpriseType {
+data class EnterpriseType(
 
-        @SerializedName("id")
-        var idType: Int = 0
-
-        @SerializedName("enterprise_type_name")
-        var enterpriseTypeName: String = ""
-
-}
+    @SerializedName("enterprise_type_name")
+    val enterpriseTypeName: String?
+)

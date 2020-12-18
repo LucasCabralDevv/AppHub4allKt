@@ -6,71 +6,83 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
-import androidx.core.view.isVisible
 import com.lucascabral.hub4all.R
 import com.lucascabral.hub4all.api.LoginService
 import com.lucascabral.hub4all.api.RetrofitClient
-import com.lucascabral.hub4all.api.response.LoginResponse
 import com.lucascabral.hub4all.constants.HeaderConstants
 import kotlinx.android.synthetic.main.activity_login.*
-import okhttp3.Headers
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginActivity : AppCompatActivity(), View.OnClickListener {
+class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         supportActionBar?.hide()
 
-        setListeners()
-    }
-
-    override fun onClick(view: View) {
-
-        val id = view.id
-        if (id == R.id.loginButton) {
-            handlerLogin()
-        }
+        setButtonListener()
     }
 
     fun sendMessage(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
+    private fun setButtonListener() {
+        loginButton.setOnClickListener {
+            handlerLogin()
+        }
+    }
+
     private fun handlerLogin() {
-        val email = loginEmailEdit.text.toString()
-        val password = loginPasswordEdit.text.toString()
+        val email = loginEmailEditText.text.toString()
+        val password = loginPasswordEditText.text.toString()
 
-        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            if (!password.isEmpty()) {//Email e Senha válidos!
+        val validEmail = validateEmail(email)
+        val validPassword = validatePassword(password)
 
-                doLogin(email, password)
+        if (validEmail && validPassword) doLogin(email, password)
+    }
 
-            } else {
-                loginPasswordEdit.error = getString(R.string.password_empty_error_message)
-            }
+    private fun validatePassword(password: String): Boolean {
+        return if (password.isNotEmpty()) {
+            true
         } else {
-            loginEmailEdit.error = getString(R.string.email_empty_error_message)
+            loginPasswordTextInputLayout.error = getString(R.string.password_empty_error_message)
+            false
+        }
+    }
+
+    private fun validateEmail(email: String): Boolean {
+        return when {
+            email.isEmpty() -> {
+                loginEmailTextInputLayout.error = getString(R.string.email_empty_error_message)
+                false
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                loginEmailTextInputLayout.error = getString(R.string.email_invalid_error_message)
+                false
+            }
+            else -> true
         }
     }
 
     private fun doLogin(email: String, password: String) {
+        loginProgressBar.visibility = View.VISIBLE
+
         val remote = RetrofitClient.createService(LoginService::class.java)
 
-        val call: Call<LoginResponse> = remote.login(email, password)
-        call.enqueue(object : Callback<LoginResponse> {
+        val call: Call<ResponseBody> = remote.login(email, password)
+        call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(
-                call: Call<LoginResponse>, response: Response<LoginResponse>
+                call: Call<ResponseBody>, responseBody: Response<ResponseBody>
             ) {
-                if (response.isSuccessful) {
-                    loginProgressBar.visibility = View.VISIBLE
+                if (responseBody.isSuccessful) {
                     sendMessage(getString(R.string.login_successful_message))
-
                     //Recupera os headers
-                    val (token: String, client: String, uid: String) = getHeaders(response)
+                    val (token: String, client: String, uid: String) = getHeaders(responseBody)
 
                     val intent = Intent(applicationContext, EnterprisesActivity::class.java)
                     intent.putExtra(HeaderConstants.ACCESS_TOKEN, token)
@@ -80,25 +92,22 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     finish()
 
                 } else { //Exibindo texto de credenciais inválidas
+                    loginProgressBar.visibility = View.GONE
                     loginCredentialsErrorTextView.visibility = View.VISIBLE
                 }
             }
 
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                loginProgressBar.visibility = View.GONE
                 sendMessage(getString(R.string.internet_failure_message))
             }
         })
     }
 
-    private fun getHeaders(response: Response<LoginResponse>): Triple<String, String, String> {
-        val headers: Headers = response.headers()
-        val token: String = response.headers()[HeaderConstants.ACCESS_TOKEN].toString()
-        val client: String = response.headers()[HeaderConstants.CLIENT].toString()
-        val uid: String = response.headers()[HeaderConstants.UID].toString()
+    private fun getHeaders(responseBody: Response<ResponseBody>): Triple<String, String, String> {
+        val token: String = responseBody.headers()[HeaderConstants.ACCESS_TOKEN].toString()
+        val client: String = responseBody.headers()[HeaderConstants.CLIENT].toString()
+        val uid: String = responseBody.headers()[HeaderConstants.UID].toString()
         return Triple(token, client, uid)
-    }
-
-    private fun setListeners() {
-        loginButton.setOnClickListener(this)
     }
 }

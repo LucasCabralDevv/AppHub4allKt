@@ -9,10 +9,9 @@ import kotlinx.android.synthetic.main.activity_enterprise_description.*
 
 class EnterpriseDescriptionActivity : AppCompatActivity() {
 
-    private var photo: String = ""
+    private var photoUrl: String = ""
     private var name: String = ""
     private var description: String = ""
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,21 +23,21 @@ class EnterpriseDescriptionActivity : AppCompatActivity() {
     }
 
     private fun getHeaders() {
-        photo = intent.getStringExtra(ProjectConstants.PHOTO).toString()
+        photoUrl = intent.getStringExtra(ProjectConstants.PHOTO).toString()
         name = intent.getStringExtra(ProjectConstants.NAME).toString()
         description = intent.getStringExtra(ProjectConstants.DESCRIPTION).toString()
     }
 
     private fun setupToolbar() {
-        if (supportActionBar != null) {
-            supportActionBar!!.title = name
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar?.apply {
+            title = name
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
         }
     }
 
     private fun setupViews() {
-        Glide.with(applicationContext).load(ProjectConstants.BASE_URL_PHOTO + photo)
+        Glide.with(applicationContext).load(ProjectConstants.BASE_URL_PHOTO + photoUrl)
             .into(descriptionEnterpriseImageView)
         descriptionEnterpriseTextView.text = description
     }

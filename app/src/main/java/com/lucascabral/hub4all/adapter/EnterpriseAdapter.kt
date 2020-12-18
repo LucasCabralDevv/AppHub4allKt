@@ -15,9 +15,9 @@ import com.lucascabral.hub4all.models.EnterpriseModel
 
 class EnterpriseAdapter : RecyclerView.Adapter<EnterpriseAdapter.EnterpriseViewHolder>() {
 
-    private var listEnterprise: List<EnterpriseModel>? = arrayListOf()
+    private var listEnterprise: List<EnterpriseModel> = arrayListOf()
 
-    fun setEnterpriseList(enterpriseList: List<EnterpriseModel>?) {
+    fun setEnterpriseList(enterpriseList: List<EnterpriseModel>) {
         this.listEnterprise = enterpriseList
     }
 
@@ -29,40 +29,44 @@ class EnterpriseAdapter : RecyclerView.Adapter<EnterpriseAdapter.EnterpriseViewH
 
     override fun onBindViewHolder(holder: EnterpriseViewHolder, position: Int) {
 
-        val enterprise: EnterpriseModel = listEnterprise!![position]
-        holder.bindData(enterprise, holder)
+        val enterprise: EnterpriseModel = listEnterprise[position]
+        holder.bindData(enterprise)
     }
 
     override fun getItemCount(): Int {
-        return listEnterprise!!.count()
+        return listEnterprise.count()
     }
 
-    class EnterpriseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class EnterpriseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private var imageEnterprise: ImageView = itemView.findViewById(R.id.adapterImageView)
-        private var nameEnterprise: TextView = itemView.findViewById(R.id.adapterNameTextView)
-        private var typeEnterprise: TextView = itemView.findViewById(R.id.adapterTypeTextView)
-        private var countryEnterprise: TextView = itemView.findViewById(R.id.adapterCountryTextView)
+        private val imageEnterprise: ImageView = itemView.findViewById(R.id.adapterImageView)
+        private val nameEnterprise: TextView = itemView.findViewById(R.id.adapterNameTextView)
+        private val typeEnterprise: TextView = itemView.findViewById(R.id.adapterTypeTextView)
+        private val countryEnterprise: TextView = itemView.findViewById(R.id.adapterCountryTextView)
 
-        fun bindData(enterprise: EnterpriseModel, holder: EnterpriseViewHolder) {
-            val baseUrl = ProjectConstants.BASE_URL_PHOTO
+        fun bindData(enterprise: EnterpriseModel) {
 
-            Glide.with(holder.itemView.context)
-                .load(baseUrl + enterprise.photo).into(holder.imageEnterprise)
+            itemView.apply {
 
-            holder.nameEnterprise.text = enterprise.enterpriseName
-            holder.typeEnterprise.text = enterprise.enterpriseType.enterpriseTypeName
-            holder.countryEnterprise.text = enterprise.country
+                val baseUrl = ProjectConstants.BASE_URL_PHOTO
 
-            holder.itemView.setOnClickListener {
-                val intent =
-                    Intent(holder.itemView.context, EnterpriseDescriptionActivity::class.java)
-                intent.putExtra(ProjectConstants.PHOTO, enterprise.photo)
-                intent.putExtra(ProjectConstants.NAME, enterprise.enterpriseName)
-                intent.putExtra(ProjectConstants.DESCRIPTION, enterprise.description)
-                holder.itemView.context.startActivity(intent)
+                Glide.with(context)
+                    .load(baseUrl + enterprise.photoUrl).into(imageEnterprise)
+
+                nameEnterprise.text = enterprise.enterpriseName
+                typeEnterprise.text = enterprise.enterpriseType?.enterpriseTypeName
+                countryEnterprise.text = enterprise.country
+
+                setOnClickListener {
+                    val intent =
+                        Intent(context, EnterpriseDescriptionActivity::class.java)
+                    intent.putExtra(ProjectConstants.PHOTO, enterprise.photoUrl)
+                    intent.putExtra(ProjectConstants.NAME, enterprise.enterpriseName)
+                    intent.putExtra(ProjectConstants.DESCRIPTION, enterprise.description)
+                    context.startActivity(intent)
+                }
             }
         }
     }
-
 }
+

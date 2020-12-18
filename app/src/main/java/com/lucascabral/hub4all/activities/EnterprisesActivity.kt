@@ -1,10 +1,7 @@
 package com.lucascabral.hub4all.activities
 
-import android.app.SearchManager
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.widget.LinearLayout
@@ -14,10 +11,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lucascabral.hub4all.R
 import com.lucascabral.hub4all.adapter.EnterpriseAdapter
-import com.lucascabral.hub4all.api.RequestAllEnterprisesService
-import com.lucascabral.hub4all.api.RequestSearchEnterprisesService
+import com.lucascabral.hub4all.api.RequestEnterprisesService
 import com.lucascabral.hub4all.api.RetrofitClient
-import com.lucascabral.hub4all.api.response.EnterpriseResponse
+import com.lucascabral.hub4all.models.EnterpriseResponse
 import com.lucascabral.hub4all.constants.HeaderConstants
 import com.lucascabral.hub4all.models.EnterpriseModel
 import kotlinx.android.synthetic.main.activity_enterprises.*
@@ -46,20 +42,17 @@ class EnterprisesActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.search_menu, menu)
 
-        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu?.findItem(R.id.search_menu)
         val searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = "Pesquisar"
-        searchView.setSearchableInfo(manager.getSearchableInfo(componentName))
+
+        searchView.queryHint = getString(R.string.search_query_hint)
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                searchView.clearFocus()
                 searchView.setQuery("", false)
-                searchItem.collapseActionView()
 
-                if (query != null) {
-                    requestSearchEnterprises(query)
+                query?.let {
+                    requestSearchEnterprises(it)
                 }
 
                 return true
@@ -69,6 +62,12 @@ class EnterprisesActivity : AppCompatActivity() {
                 return false
             }
         })
+
+        searchView.setOnCloseListener {
+            requestAllEnterprises()
+            false
+        }
+
         return true
     }
 
@@ -77,9 +76,9 @@ class EnterprisesActivity : AppCompatActivity() {
     }
 
     private fun requestAllEnterprises() {
-        val remote = RetrofitClient.createService(RequestAllEnterprisesService::class.java)
+        val remote = RetrofitClient.createService(RequestEnterprisesService::class.java)
 
-        val call: Call<EnterpriseResponse> = remote.getEnterprises(accessToken, client, uid)
+        val call: Call<EnterpriseResponse> = remote.searchAllEnterprises(accessToken, client, uid)
         call.enqueue(object : Callback<EnterpriseResponse> {
             override fun onResponse(
                 call: Call<EnterpriseResponse>,
@@ -88,7 +87,7 @@ class EnterprisesActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val enterprisesResponse: EnterpriseResponse? = response.body()
                     val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
-                    adapterEnterprise.setEnterpriseList(enterprises)
+                    adapterEnterprise.setEnterpriseList(enterprises ?: arrayListOf())
                     enterprisesRecycler.adapter = adapterEnterprise
                 } else {
                     sendMessage(getString(R.string.connecting_server_error_message))
@@ -102,9 +101,9 @@ class EnterprisesActivity : AppCompatActivity() {
     }
 
     private fun requestSearchEnterprises(query: String) {
-        val remote = RetrofitClient.createService(RequestSearchEnterprisesService::class.java)
+        val remote = RetrofitClient.createService(RequestEnterprisesService::class.java)
         val call: Call<EnterpriseResponse> =
-            remote.searchEnterprises(accessToken, client, uid, query)
+            remote.filterEnterprises(accessToken, client, uid, query)
 
         call.enqueue(object : Callback<EnterpriseResponse> {
             override fun onResponse(
@@ -131,12 +130,12 @@ class EnterprisesActivity : AppCompatActivity() {
     ) {
         val enterprisesResponse: EnterpriseResponse? = response.body()
         val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
-        if (!enterprises.isNullOrEmpty()) {
+        if (enterprises?.isNotEmpty() == true) {
             adapterEnterprise.setEnterpriseList(enterprises)
             enterprisesRecycler.adapter = adapterEnterprise
             adapterEnterprise.notifyDataSetChanged()
         } else {
-            sendMessage("Nenhuma empresa foi encontrada com o nome: $query")
+            sendMessage(getString(R.string.search_empty_enterprise_message, query))
         }
     }
 

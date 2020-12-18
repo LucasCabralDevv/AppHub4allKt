@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/logoverde" />
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/adapterNameTextView"

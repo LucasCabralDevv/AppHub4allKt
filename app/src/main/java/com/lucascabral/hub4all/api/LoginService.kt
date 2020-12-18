@@ -1,6 +1,6 @@
 package com.lucascabral.hub4all.api
 
-import com.lucascabral.hub4all.api.response.LoginResponse
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -13,5 +13,5 @@ interface LoginService {
     fun login(
         @Field("email") email: String,
         @Field("password") password: String
-    ): Call<LoginResponse>
+    ): Call<ResponseBody>
 }

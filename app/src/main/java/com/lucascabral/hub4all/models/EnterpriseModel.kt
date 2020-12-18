@@ -2,25 +2,18 @@ package com.lucascabral.hub4all.models
 
 import com.google.gson.annotations.SerializedName
 
-class EnterpriseModel {
+data class EnterpriseModel(
 
     @SerializedName("id")
-    var id: Int = 0
-
+    val id: Int?,
     @SerializedName("enterprise_name")
-    var enterpriseName: String = ""
-
+    val enterpriseName: String?,
     @SerializedName("description")
-    var description: String = ""
-
+    val description: String?,
     @SerializedName("photo")
-    var photo: String = ""
-
+    val photoUrl: String?,
     @SerializedName("country")
-    var country: String = ""
-
+    val country: String?,
     @SerializedName("enterprise_type")
-    lateinit var enterpriseType: EnterpriseType
-
-
-}
+    val enterpriseType: EnterpriseType?
+)
