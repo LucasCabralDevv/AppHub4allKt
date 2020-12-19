@@ -12,8 +12,9 @@
     <string name="login_successful_message">Sucesso ao fazer login</string>
     <string name="connecting_server_error_message">Erro ao conectar com o servidor</string>
     <string name="search_title_text">Pesquisar</string>
-    <string name="login_logo_contentDescription">Logomarca do 4all</string>
+    <string name="logo_contentDescription">Logomarca da 4all</string>
     <string name="search_query_hint">Pesquisar</string>
     <string name="search_empty_enterprise_message">"Nenhuma empresa foi encontrada com o nome: %s"</string>
     <string name="enterprise_image_contentDescription">Imagem representativa da empresa</string>
+    <string name="splash_title_text">Tecnologia para todos</string>
 </resources>
