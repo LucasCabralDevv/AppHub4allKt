@@ -17,12 +17,12 @@ class EnterpriseDescriptionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enterprise_description)
 
-        getHeaders()
+        getEnterpriseDescription()
         setupToolbar()
         setupViews()
     }
 
-    private fun getHeaders() {
+    private fun getEnterpriseDescription() {
         photoUrl = intent.getStringExtra(ProjectConstants.PHOTO).toString()
         name = intent.getStringExtra(ProjectConstants.NAME).toString()
         description = intent.getStringExtra(ProjectConstants.DESCRIPTION).toString()
