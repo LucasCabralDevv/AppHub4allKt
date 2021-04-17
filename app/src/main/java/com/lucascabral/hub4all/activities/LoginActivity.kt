@@ -10,17 +10,20 @@ import com.lucascabral.hub4all.R
 import com.lucascabral.hub4all.api.LoginService
 import com.lucascabral.hub4all.api.RetrofitClient
 import com.lucascabral.hub4all.constants.HeaderConstants
-import kotlinx.android.synthetic.main.activity_login.*
+import com.lucascabral.hub4all.databinding.ActivityLoginBinding
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var mainBinding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
+        mainBinding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
         supportActionBar?.hide()
 
         setButtonListener()
@@ -31,14 +34,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setButtonListener() {
-        loginButton.setOnClickListener {
+        mainBinding.loginButton.setOnClickListener {
             handlerLogin()
         }
     }
 
     private fun handlerLogin() {
-        val email = loginEmailEditText.text.toString()
-        val password = loginPasswordEditText.text.toString()
+        val email = mainBinding.loginEmailEditText.text.toString()
+        val password = mainBinding.loginPasswordEditText.text.toString()
 
         val validEmail = validateEmail(email)
         val validPassword = validatePassword(password)
@@ -48,10 +51,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validatePassword(password: String): Boolean {
         return if (password.isNotEmpty()) {
-            loginPasswordTextInputLayout.error = null
+            mainBinding.loginPasswordTextInputLayout.error = null
             true
         } else {
-            loginPasswordTextInputLayout.error = getString(R.string.password_empty_error_message)
+            mainBinding.loginPasswordTextInputLayout.error = getString(R.string.password_empty_error_message)
             false
         }
     }
@@ -59,22 +62,22 @@ class LoginActivity : AppCompatActivity() {
     private fun validateEmail(email: String): Boolean {
         return when {
             email.isEmpty() -> {
-                loginEmailTextInputLayout.error = getString(R.string.email_empty_error_message)
+                mainBinding.loginEmailTextInputLayout.error = getString(R.string.email_empty_error_message)
                 false
             }
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                loginEmailTextInputLayout.error = getString(R.string.email_invalid_error_message)
+                mainBinding.loginEmailTextInputLayout.error = getString(R.string.email_invalid_error_message)
                 false
             }
             else -> {
-                loginEmailTextInputLayout.error = null
+                mainBinding.loginEmailTextInputLayout.error = null
                 true
             }
         }
     }
 
     private fun doLogin(email: String, password: String) {
-        loginProgressBar.visibility = View.VISIBLE
+        mainBinding.loginProgressBar.visibility = View.VISIBLE
 
         val remote = RetrofitClient.createService(LoginService::class.java)
 
@@ -96,13 +99,13 @@ class LoginActivity : AppCompatActivity() {
                     finish()
 
                 } else { //Exibindo texto de credenciais inválidas
-                    loginProgressBar.visibility = View.GONE
-                    loginCredentialsErrorTextView.visibility = View.VISIBLE
+                    mainBinding.loginProgressBar.visibility = View.GONE
+                    mainBinding.loginCredentialsErrorTextView.visibility = View.VISIBLE
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                loginProgressBar.visibility = View.GONE
+                mainBinding.loginProgressBar.visibility = View.GONE
                 sendMessage(getString(R.string.internet_failure_message))
             }
         })
