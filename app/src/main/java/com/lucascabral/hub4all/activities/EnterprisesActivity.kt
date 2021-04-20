@@ -15,8 +15,8 @@ import com.lucascabral.hub4all.api.RequestEnterprisesService
 import com.lucascabral.hub4all.api.RetrofitClient
 import com.lucascabral.hub4all.models.EnterpriseResponse
 import com.lucascabral.hub4all.constants.HeaderConstants
+import com.lucascabral.hub4all.databinding.ActivityEnterprisesBinding
 import com.lucascabral.hub4all.models.EnterpriseModel
-import kotlinx.android.synthetic.main.activity_enterprises.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,11 +27,13 @@ class EnterprisesActivity : AppCompatActivity() {
     private var client: String = ""
     private var uid: String = ""
 
+    private lateinit var enterprisesBinding: ActivityEnterprisesBinding
     private val adapterEnterprise: EnterpriseAdapter = EnterpriseAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_enterprises)
+        enterprisesBinding = ActivityEnterprisesBinding.inflate(layoutInflater)
+        setContentView(enterprisesBinding.root)
 
         getHeaders()
         setupRecyclerView()
@@ -88,7 +90,7 @@ class EnterprisesActivity : AppCompatActivity() {
                     val enterprisesResponse: EnterpriseResponse? = response.body()
                     val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
                     adapterEnterprise.setEnterpriseList(enterprises ?: arrayListOf())
-                    enterprisesRecycler.adapter = adapterEnterprise
+                    enterprisesBinding.enterprisesRecycler.adapter = adapterEnterprise
                 } else {
                     sendMessage(getString(R.string.connecting_server_error_message))
                 }
@@ -132,7 +134,7 @@ class EnterprisesActivity : AppCompatActivity() {
         val enterprises: List<EnterpriseModel>? = enterprisesResponse?.enterprises
         if (enterprises?.isNotEmpty() == true) {
             adapterEnterprise.setEnterpriseList(enterprises)
-            enterprisesRecycler.adapter = adapterEnterprise
+            enterprisesBinding.enterprisesRecycler.adapter = adapterEnterprise
             adapterEnterprise.notifyDataSetChanged()
         } else {
             sendMessage(getString(R.string.search_empty_enterprise_message, query))
@@ -146,8 +148,10 @@ class EnterprisesActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        enterprisesRecycler.layoutManager = LinearLayoutManager(applicationContext)
-        enterprisesRecycler.setHasFixedSize(true)
-        enterprisesRecycler.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
+        with(enterprisesBinding.enterprisesRecycler) {
+            layoutManager = LinearLayoutManager(applicationContext)
+            setHasFixedSize(true)
+            addItemDecoration(DividerItemDecoration(this@EnterprisesActivity, LinearLayout.VERTICAL))
+        }
     }
 }

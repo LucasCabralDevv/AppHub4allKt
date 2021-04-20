@@ -18,12 +18,12 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var mainBinding: ActivityLoginBinding
+    private lateinit var loginBinding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainBinding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(mainBinding.root)
+        loginBinding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(loginBinding.root)
         supportActionBar?.hide()
 
         setButtonListener()
@@ -34,14 +34,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setButtonListener() {
-        mainBinding.loginButton.setOnClickListener {
+        loginBinding.loginButton.setOnClickListener {
             handlerLogin()
         }
     }
 
     private fun handlerLogin() {
-        val email = mainBinding.loginEmailEditText.text.toString()
-        val password = mainBinding.loginPasswordEditText.text.toString()
+        val email = loginBinding.loginEmailEditText.text.toString()
+        val password = loginBinding.loginPasswordEditText.text.toString()
 
         val validEmail = validateEmail(email)
         val validPassword = validatePassword(password)
@@ -51,10 +51,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validatePassword(password: String): Boolean {
         return if (password.isNotEmpty()) {
-            mainBinding.loginPasswordTextInputLayout.error = null
+            loginBinding.loginPasswordTextInputLayout.error = null
             true
         } else {
-            mainBinding.loginPasswordTextInputLayout.error = getString(R.string.password_empty_error_message)
+            loginBinding.loginPasswordTextInputLayout.error = getString(R.string.password_empty_error_message)
             false
         }
     }
@@ -62,22 +62,22 @@ class LoginActivity : AppCompatActivity() {
     private fun validateEmail(email: String): Boolean {
         return when {
             email.isEmpty() -> {
-                mainBinding.loginEmailTextInputLayout.error = getString(R.string.email_empty_error_message)
+                loginBinding.loginEmailTextInputLayout.error = getString(R.string.email_empty_error_message)
                 false
             }
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                mainBinding.loginEmailTextInputLayout.error = getString(R.string.email_invalid_error_message)
+                loginBinding.loginEmailTextInputLayout.error = getString(R.string.email_invalid_error_message)
                 false
             }
             else -> {
-                mainBinding.loginEmailTextInputLayout.error = null
+                loginBinding.loginEmailTextInputLayout.error = null
                 true
             }
         }
     }
 
     private fun doLogin(email: String, password: String) {
-        mainBinding.loginProgressBar.visibility = View.VISIBLE
+        loginBinding.loginProgressBar.visibility = View.VISIBLE
 
         val remote = RetrofitClient.createService(LoginService::class.java)
 
@@ -99,13 +99,13 @@ class LoginActivity : AppCompatActivity() {
                     finish()
 
                 } else { //Exibindo texto de credenciais inválidas
-                    mainBinding.loginProgressBar.visibility = View.GONE
-                    mainBinding.loginCredentialsErrorTextView.visibility = View.VISIBLE
+                    loginBinding.loginProgressBar.visibility = View.GONE
+                    loginBinding.loginCredentialsErrorTextView.visibility = View.VISIBLE
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                mainBinding.loginProgressBar.visibility = View.GONE
+                loginBinding.loginProgressBar.visibility = View.GONE
                 sendMessage(getString(R.string.internet_failure_message))
             }
         })
