@@ -3,19 +3,20 @@ package com.lucascabral.hub4all.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumptech.glide.Glide
-import com.lucascabral.hub4all.R
 import com.lucascabral.hub4all.constants.ProjectConstants
-import kotlinx.android.synthetic.main.activity_enterprise_description.*
+import com.lucascabral.hub4all.databinding.ActivityEnterpriseDescriptionBinding
 
 class EnterpriseDescriptionActivity : AppCompatActivity() {
 
     private var photoUrl: String = ""
     private var name: String = ""
     private var description: String = ""
+    private lateinit var descriptionBinding: ActivityEnterpriseDescriptionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_enterprise_description)
+        descriptionBinding = ActivityEnterpriseDescriptionBinding.inflate(layoutInflater)
+        setContentView(descriptionBinding.root)
 
         getEnterpriseDescription()
         setupToolbar()
@@ -38,8 +39,8 @@ class EnterpriseDescriptionActivity : AppCompatActivity() {
 
     private fun setupViews() {
         Glide.with(applicationContext).load(ProjectConstants.BASE_URL_PHOTO + photoUrl)
-            .into(descriptionEnterpriseImageView)
-        descriptionEnterpriseTextView.text = description
+            .into(descriptionBinding.descriptionEnterpriseImageView)
+        descriptionBinding.descriptionEnterpriseTextView.text = description
     }
 
     override fun onSupportNavigateUp(): Boolean {
